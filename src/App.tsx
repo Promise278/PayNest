@@ -1,0 +1,21 @@
+// import { useState } from 'react'
+// import './index.css'
+
+function App() {
+
+  return (
+    <div className="h-screen flex items-center justify-center bg-blue-50">
+      <div className="bg-white p-8 rounded-2xl shadow-xl">
+        <h1 className="text-2xl font-bold text-blue-600">
+          PayNest Wallet
+        </h1>
+        <p className='text-green-500 text-xl'>PayNest a secure digital wallet for simple payments, smart transfers, and trusted financial control.</p>
+        <p className="mt-2 text-gray-600 text-5xl">
+          Coming Soon Watch Out!!!!!!!!
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default App

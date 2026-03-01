@@ -1,6 +1,7 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "./pages/welcome";
 import CreateWallet from "./pages/create";
+import Settings from "./pages/settings";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="/send" element={<div>Send Assets</div>} />
           <Route path="/receive" element={<div>Receive Assets</div>} />
           <Route path="/assets" element={<div>Assets</div>} />
-          <Route path="/settings" element={<div>Settings</div>} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
     </Router>

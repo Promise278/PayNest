@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "PayNest",
+    "version": "1.0.0",
+    "description": "PayNest Extension",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "PayNest",
+        "default_icon": "vite.svg"
+    },
+    "icons": {
+        "16": "vite.svg",
+        "48": "vite.svg",
+        "128": "vite.svg"
+    }
+}

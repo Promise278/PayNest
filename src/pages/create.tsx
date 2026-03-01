@@ -1,20 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wallet } from "ethers";
 
 function CreateWallet() {
     const navigate = useNavigate();
-    const [mnemonic, setMnemonic] = useState<string[]>([]);
+    const [mnemonic] = useState<string[]>(() => {
+        const wallet = Wallet.createRandom();
+        return wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [];
+    });
     const [isRevealed, setIsRevealed] = useState(false);
     const [copied, setCopied] = useState(false);
-
-    useEffect(() => {
-        // Generate a random wallet and extract the 12-word seed phrase
-        const wallet = Wallet.createRandom();
-        if (wallet.mnemonic) {
-            setMnemonic(wallet.mnemonic.phrase.split(" "));
-        }
-    }, []);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(mnemonic.join(" "));

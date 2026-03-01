@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 function ReceiveAssets() {
     const navigate = useNavigate();
-    const [address] = useState("0x71C249612833931f75191c55CCad292dcf303f4E"); // Mock address
+    const [address] = useState("0x71C249612833931f75191c55CCad292dcf303f4E"); 
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {

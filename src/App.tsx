@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard";
 import SendAssets from "./pages/send";
 import ReceiveAssets from "./pages/receive";
 import { WalletProvider } from "./context/WalletContext";
+import Assets from "./pages/assets";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/send" element={<SendAssets />} />
               <Route path="/receive" element={<ReceiveAssets />} />
-              <Route path="/assets" element={<div>Assets</div>} />
+              <Route path="/assets" element={<Assets />} />
               <Route path="/settings" element={<div>Settings</div>} />
             </Routes>
           </div>

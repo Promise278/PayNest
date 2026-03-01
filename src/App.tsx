@@ -1,5 +1,6 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "./pages/welcome";
+import CreateWallet from "./pages/create";
 
 function App() {
   return (
@@ -7,7 +8,7 @@ function App() {
       <div className="w-[360px] h-[600px] bg-black text-white relative">
         <Routes>
           <Route path="/" element={<Welcome />} />
-          <Route path="/create" element={<div>Create Wallet</div>} />
+          <Route path="/create" element={<CreateWallet />} />
           <Route path="/setup" element={<div>Setup</div>} />
           <Route path="/validation" element={<div>Validation</div>} />
           <Route path="/import" element={<div>Import Wallet</div>} />

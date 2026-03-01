@@ -4,18 +4,18 @@ function App() {
   return (
     <>
       <Router>
-        <div className="w-90 h-150 overflow-y-auto overflow-x-hidden bg-black">
+        <div className="w-90 h-150 overflow-y-auto overflow-x-hidden bg-black text-white">
           <Routes>
             <Route path="/" element={<Welcome />} />
-            <Route path="/create" element={null} />
-            <Route path="/setup" element={null} />
-            <Route path="/validation" element={null} />
-            <Route path="/import" element={null} />
-            <Route path="/dashboard" element={null} />
-            <Route path="/send" element={null} />
-            <Route path="/receive" element={null} />
-            <Route path="/assets" element={null} />
-            <Route path="/settings" element={null} />
+            <Route path="/create" element={<div>Create Wallet</div>} />
+            <Route path="/setup" element={<div>Setup</div>} />
+            <Route path="/validation" element={<div>Validation</div>} />
+            <Route path="/import" element={<div>Import Wallet</div>} />
+            <Route path="/dashboard" element={<div>Dashboard</div>} />
+            <Route path="/send" element={<div>Send Assets</div>} />
+            <Route path="/receive" element={<div>Receive Assets</div>} />
+            <Route path="/assets" element={<div>Assets</div>} />
+            <Route path="/settings" element={<div>Settings</div>} />
           </Routes>
         </div>
       </Router>

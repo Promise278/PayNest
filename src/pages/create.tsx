@@ -97,6 +97,7 @@ function CreateWallet() {
 
                     <button
                         disabled={!isRevealed}
+                        onClick={() => navigate("/dashboard")}
                         className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
               ${isRevealed
                                 ? "bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98]"

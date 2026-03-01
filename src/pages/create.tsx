@@ -4,12 +4,18 @@ import { Wallet } from "ethers";
 import { saveWallet } from "../utils/wallet";
 import { useWallet } from "../context/WalletContext";
 
+const WALLET_STORAGE_KEY = "paynest_wallet";
+
 function CreateWallet() {
     const navigate = useNavigate();
     const { connectWallet } = useWallet();
     const [mnemonic] = useState<string[]>(() => {
+    const [walletData] = useState(() => {
         const wallet = Wallet.createRandom();
-        return wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [];
+        return {
+            address: wallet.address,
+            mnemonicWords: wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [],
+        };
     });
     const [isRevealed, setIsRevealed] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -18,10 +24,12 @@ function CreateWallet() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
+    const [hasCopied, setHasCopied] = useState(false);
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(mnemonic.join(" "));
+        navigator.clipboard.writeText(walletData.mnemonicWords.join(" "));
         setCopied(true);
+        setHasCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
@@ -121,8 +129,18 @@ function CreateWallet() {
         );
     }
 
+    const handleWalletConfirm = () => {
+        const payload = {
+            address: walletData.address,
+            mnemonic: walletData.mnemonicWords.join(" "),
+            createdAt: Date.now(),
+        };
+        localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(payload));
+        navigate("/settings");
+    };
+
     return (
-        <div className="min-h-full bg-black flex flex-col p-6 relative">
+        <div className="h-full w-full bg-black flex flex-col p-6 relative">
             <div className="flex items-center mb-8">
                 <button
                     onClick={() => navigate("/")}
@@ -143,7 +161,7 @@ function CreateWallet() {
                 {/* Seed Phrase Container */}
                 <div className="relative w-full mb-6">
                     <div className="grid grid-cols-3 gap-3">
-                        {mnemonic.map((word, index) => (
+                        {walletData.mnemonicWords.map((word, index) => (
                             <div
                                 key={index}
                                 className={`bg-white/5 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70" : "blur-0 opacity-100"
@@ -158,7 +176,7 @@ function CreateWallet() {
                     {/* Blur Overlay & Reveal Button */}
                     {!isRevealed && (
                         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm rounded-xl border border-white/10">
-                            <svg className="w-8 h-8 text-white mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-8 h-8 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                             </svg>
                             <button
@@ -175,11 +193,9 @@ function CreateWallet() {
                 <div className="w-full space-y-3 mt-auto mb-4">
                     <button
                         onClick={handleCopy}
-                        disabled={!isRevealed}
-                        className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2
-              ${isRevealed
-                                ? "bg-white/5 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:scale-[1.02] active:scale-[0.98]"
-                                : "bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed opacity-50"
+                        className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${isRevealed
+                            ? "bg-white/5 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:scale-[1.02] active:scale-[0.98]"
+                            : "bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-[0.98]"
                             }`}
                     >
                         {copied ? (
@@ -202,8 +218,10 @@ function CreateWallet() {
                     <button
                         disabled={!isRevealed}
                         onClick={() => setStep('password')}
+                        disabled={!isRevealed && !hasCopied}
+                        onClick={handleWalletConfirm}
                         className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
-              ${isRevealed
+              ${(isRevealed || hasCopied)
                                 ? "bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98]"
                                 : "bg-gray-800 text-gray-500 cursor-not-allowed"
                             }`}

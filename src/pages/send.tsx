@@ -21,7 +21,7 @@ function SendAssets() {
         setError("");
         setStatus('sending');
 
-        // Simulate transaction
+        
         setTimeout(() => {
             setStatus('success');
         }, 2000);

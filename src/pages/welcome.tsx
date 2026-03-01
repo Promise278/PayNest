@@ -1,4 +1,4 @@
-
+import { useNavigate } from "react-router-dom";
 
 const particles = Array.from({ length: 20 }, (_, i) => ({
   id: i,
@@ -9,6 +9,8 @@ const particles = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 function Welcome() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-full bg-black flex flex-col items-center justify-center p-6 overflow-hidden relative">
       {/* Animated gradient background */}
@@ -51,7 +53,7 @@ function Welcome() {
 
           {/* Logo */}
           <div className="w-38 h-38 rounded-full m-2 overflow-hidden border-2 border-blue-500 animate-logo-pulse">
-           <p className="text-blue-500 text-3xl text-center leading-38">Pay<span className="text-white">Nest</span> </p>
+            <p className="text-blue-500 text-3xl text-center leading-38">Pay<span className="text-white">Nest</span> </p>
           </div>
         </div>
 
@@ -59,7 +61,9 @@ function Welcome() {
         <div
           className="flex flex-col space-y-3 w-full max-w-xs mt-4 animate-fade-in-up"
           style={{ animationDelay: "0.4s" }}>
-          <button className="w-full py-3.5 px-6 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]">
+          <button
+            onClick={() => navigate("/create")}
+            className="w-full py-3.5 px-6 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]">
             Create Wallet
           </button>
           <button className="w-full py-3.5 px-6 bg-white/5 backdrop-blur border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400/50 font-semibold rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">

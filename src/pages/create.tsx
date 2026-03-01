@@ -2,19 +2,34 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wallet } from "ethers";
 
+const WALLET_STORAGE_KEY = "paynest_wallet";
+
 function CreateWallet() {
     const navigate = useNavigate();
-    const [mnemonic] = useState<string[]>(() => {
+    const [walletData] = useState(() => {
         const wallet = Wallet.createRandom();
-        return wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [];
+        return {
+            address: wallet.address,
+            mnemonicWords: wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [],
+        };
     });
     const [isRevealed, setIsRevealed] = useState(false);
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(mnemonic.join(" "));
+        navigator.clipboard.writeText(walletData.mnemonicWords.join(" "));
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleWalletConfirm = () => {
+        const payload = {
+            address: walletData.address,
+            mnemonic: walletData.mnemonicWords.join(" "),
+            createdAt: Date.now(),
+        };
+        localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(payload));
+        navigate("/settings");
     };
 
     return (
@@ -39,7 +54,7 @@ function CreateWallet() {
                 {/* Seed Phrase Container */}
                 <div className="relative w-full mb-6">
                     <div className="grid grid-cols-3 gap-3">
-                        {mnemonic.map((word, index) => (
+                        {walletData.mnemonicWords.map((word, index) => (
                             <div
                                 key={index}
                                 className={`bg-white/5 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70" : "blur-0 opacity-100"
@@ -97,6 +112,7 @@ function CreateWallet() {
 
                     <button
                         disabled={!isRevealed}
+                        onClick={handleWalletConfirm}
                         className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
               ${isRevealed
                                 ? "bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98]"

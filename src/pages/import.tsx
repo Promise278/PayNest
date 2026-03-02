@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useWallet } from "../context/WalletContext";
-import { Mnemonic } from "ethers";
+import { useWallet } from "../context/useWallet";
+import { Mnemonic, Wallet } from "ethers";
+
+const WALLET_STORAGE_KEY = "paynest_wallet";
 
 function ImportWallet() {
     const navigate = useNavigate();
@@ -64,10 +66,20 @@ function ImportWallet() {
         try {
             const phrase = mnemonic.join(" ");
             await saveNewWallet(phrase, password);
+            const derivedAddress = Wallet.fromPhrase(phrase).address;
+            localStorage.setItem(
+                WALLET_STORAGE_KEY,
+                JSON.stringify({
+                    address: derivedAddress,
+                    mnemonic: phrase,
+                    createdAt: Date.now(),
+                }),
+            );
             await connectWallet(password);
             navigate("/dashboard");
-        } catch (err: any) {
-            setError(err.message || "Failed to import wallet");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to import wallet";
+            setError(message);
             setIsSaving(false);
         }
     };

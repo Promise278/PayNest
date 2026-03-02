@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearWallet } from "../utils/wallet";
+import { useWallet } from "../context/useWallet";
 
 const WALLET_STORAGE_KEY = "paynest_wallet";
 
@@ -11,6 +13,7 @@ type StoredWallet = {
 
 function Settings() {
   const navigate = useNavigate();
+  const { logout } = useWallet();
   const [showSeedModal, setShowSeedModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [seedConfirmation, setSeedConfirmation] = useState("");
@@ -44,7 +47,9 @@ function Settings() {
   };
 
   const handleResetWallet = () => {
+    clearWallet();
     localStorage.removeItem(WALLET_STORAGE_KEY);
+    logout();
     navigate("/");
   };
 
@@ -78,7 +83,8 @@ function Settings() {
             ${storedWallet?.mnemonic
               ? "bg-white/5 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:scale-[1.02] active:scale-[0.98]"
               : "bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed opacity-60"
-            }`}
+            }`
+          }
         >
           Export Seed Phrase
         </button>

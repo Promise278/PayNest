@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useWallet } from "../context/WalletContext";
+import { useWallet } from "../context/useWallet";
 
 function ReceiveAssets() {
     const navigate = useNavigate();

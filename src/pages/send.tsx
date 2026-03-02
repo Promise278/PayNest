@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useWallet } from "../context/WalletContext";
+import { useWallet } from "../context/useWallet";
 import { parseEther } from "ethers";
 
 function SendAssets() {
@@ -47,9 +47,15 @@ function SendAssets() {
 
             setStatus('success');
             refreshBalance();
-        } catch (err: any) {
-            console.error("Transaction failed:", err);
-            setError(err.reason || err.message || "Transaction failed");
+        } catch (error: unknown) {
+            console.error("Transaction failed:", error);
+            const message =
+                typeof error === "object" && error !== null && "reason" in error
+                    ? String((error as { reason?: unknown }).reason ?? "Transaction failed")
+                    : error instanceof Error
+                        ? error.message
+                        : "Transaction failed";
+            setError(message);
             setStatus('idle');
         }
     };

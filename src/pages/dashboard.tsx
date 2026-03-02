@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import { useWallet } from "../context/WalletContext";
+import { useWallet } from "../context/useWallet";
 import { useEffect } from "react";
 
 function Dashboard() {
@@ -140,28 +139,6 @@ function Dashboard() {
             </div>
         </div>
     );
-=======
-
-function Dashboard() {
-  const navigate = useNavigate();
-
-  return (
-    <div className="min-h-full bg-black text-white p-6 flex flex-col">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <button
-          onClick={() => navigate("/settings")}
-          className="px-4 py-2 rounded-lg border border-blue-500/40 text-blue-300 hover:bg-blue-500/10 transition-colors"
-        >
-          Settings
-        </button>
-      </div>
-
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <p className="text-sm text-gray-300">Dashboard content placeholder</p>
-      </div>
-    </div>
-  );
 }
 
 export default Dashboard;

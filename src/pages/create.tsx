@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wallet } from "ethers";
-import { saveWallet } from "../utils/wallet";
-import { useWallet } from "../context/WalletContext";
+import { useWallet } from "../context/useWallet";
 
 const WALLET_STORAGE_KEY = "paynest_wallet";
 
 function CreateWallet() {
     const navigate = useNavigate();
-    const { connectWallet } = useWallet();
-    const [mnemonic] = useState<string[]>(() => {
+    const { connectWallet, saveNewWallet } = useWallet();
     const [walletData] = useState(() => {
         const wallet = Wallet.createRandom();
         return {
@@ -19,7 +17,7 @@ function CreateWallet() {
     });
     const [isRevealed, setIsRevealed] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [step, setStep] = useState<'phrase' | 'password'>('phrase');
+    const [step, setStep] = useState<"phrase" | "password">("phrase");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isSaving, setIsSaving] = useState(false);
@@ -46,26 +44,43 @@ function CreateWallet() {
         setIsSaving(true);
         setError("");
         try {
-            await saveWallet(mnemonic.join(" "), password);
+            const phrase = walletData.mnemonicWords.join(" ");
+            await saveNewWallet(phrase, password);
+
+            localStorage.setItem(
+                WALLET_STORAGE_KEY,
+                JSON.stringify({
+                    address: walletData.address,
+                    mnemonic: phrase,
+                    createdAt: Date.now(),
+                }),
+            );
+
             const success = await connectWallet(password);
             if (success) {
                 navigate("/dashboard");
             } else {
                 setError("Failed to initialize wallet");
             }
-        } catch (err: any) {
-            setError(err.message || "An error occurred");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "An error occurred";
+            setError(message);
         } finally {
             setIsSaving(false);
         }
     };
 
-    if (step === 'password') {
+    const handleWalletConfirm = () => {
+        setError("");
+        setStep("password");
+    };
+
+    if (step === "password") {
         return (
             <div className="min-h-full bg-black flex flex-col p-6 animate-fade-in-up">
                 <div className="flex items-center mb-8">
                     <button
-                        onClick={() => setStep('phrase')}
+                        onClick={() => setStep("phrase")}
                         className="text-white hover:text-blue-400 transition-colors p-2 -ml-2 rounded-full"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,16 +144,6 @@ function CreateWallet() {
         );
     }
 
-    const handleWalletConfirm = () => {
-        const payload = {
-            address: walletData.address,
-            mnemonic: walletData.mnemonicWords.join(" "),
-            createdAt: Date.now(),
-        };
-        localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(payload));
-        navigate("/settings");
-    };
-
     return (
         <div className="h-full w-full bg-black flex flex-col p-6 relative">
             <div className="flex items-center mb-8">
@@ -164,11 +169,10 @@ function CreateWallet() {
                         {walletData.mnemonicWords.map((word, index) => (
                             <div
                                 key={index}
-                                className={`bg-white/5 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70" : "blur-0 opacity-100"
-                                    }`}
+                                className={`bg-white/5 border border-white/10 rounded-lg p-2 text-center flex flex-col items-center transition-all duration-300 ${!isRevealed ? "blur-[6px] opacity-70" : "blur-0 opacity-100"}`}
                             >
                                 <span className="text-xs text-blue-500/70 mb-1">{index + 1}</span>
-                                <span className="text-white font-medium text-sm select-all">{word || '...'}</span>
+                                <span className="text-white font-medium text-sm select-all">{word || "..."}</span>
                             </div>
                         ))}
                     </div>
@@ -216,8 +220,6 @@ function CreateWallet() {
                     </button>
 
                     <button
-                        disabled={!isRevealed}
-                        onClick={() => setStep('password')}
                         disabled={!isRevealed && !hasCopied}
                         onClick={handleWalletConfirm}
                         className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300

@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { isWalletSaved } from "../utils/wallet";
-import { useWallet } from "../context/WalletContext";
+import { clearWallet, isWalletSaved } from "../utils/wallet";
+import { useWallet } from "../context/useWallet";
 import { useState, useEffect } from "react";
+
+const WALLET_STORAGE_KEY = "paynest_wallet";
 
 const particles = Array.from({ length: 20 }, (_, i) => ({
   id: i,
@@ -36,7 +38,7 @@ function Welcome() {
       } else {
         setError("Incorrect password");
       }
-    } catch (err) {
+    } catch {
       setError("Unlock failed");
     } finally {
       setIsUnlocking(false);
@@ -117,7 +119,8 @@ function Welcome() {
             <button
               onClick={() => {
                 if (confirm("This will permanently remove your current wallet from this device. Make sure you have your seed phrase saved!")) {
-                  localStorage.clear();
+                  clearWallet();
+                  localStorage.removeItem(WALLET_STORAGE_KEY);
                   window.location.reload();
                 }
               }}

@@ -36,7 +36,9 @@ function Welcome() {
       } else {
         setError("Incorrect password");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      // log for debugging but don’t expose details to user
+      console.error("unlock error", err);
       setError("Unlock failed");
     } finally {
       setIsUnlocking(false);
@@ -85,18 +87,28 @@ function Welcome() {
 
           {/* Logo */}
           <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-blue-500 animate-logo-pulse bg-black/50 backdrop-blur">
-            <p className="text-blue-500 text-2xl font-black italic">Pay<span className="text-white">Nest</span> </p>
+            <p className="text-blue-500 text-2xl font-black italic">
+              Pay<span className="text-white">Nest</span>{" "}
+            </p>
           </div>
         </div>
 
-        <div className="text-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+        <div
+          className="text-center animate-fade-in-up"
+          style={{ animationDelay: "0.2s" }}
+        >
           <h1 className="text-2xl font-black text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-500 text-sm">Your secure gateway to the blockchain</p>
+          <p className="text-gray-500 text-sm">
+            Your secure gateway to the blockchain
+          </p>
         </div>
 
         {/* Unlock Flow */}
         {hasWallet ? (
-          <div className="w-full max-w-xs space-y-4 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          <div
+            className="w-full max-w-xs space-y-4 animate-fade-in-up"
+            style={{ animationDelay: "0.4s" }}
+          >
             <div className="relative">
               <input
                 type="password"
@@ -106,7 +118,11 @@ function Welcome() {
                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 transition-all font-bold"
               />
             </div>
-            {error && <p className="text-red-500 text-xs text-center font-bold">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-xs text-center font-bold">
+                {error}
+              </p>
+            )}
             <button
               onClick={handleUnlock}
               disabled={isUnlocking}
@@ -126,16 +142,17 @@ function Welcome() {
             >
               Forgot Password?
             </button> */}
-
           </div>
         ) : (
           /* Initial Setup Flow */
           <div
             className="flex flex-col space-y-3 w-full max-w-xs mt-4 animate-fade-in-up"
-            style={{ animationDelay: "0.4s" }}>
+            style={{ animationDelay: "0.4s" }}
+          >
             <button
               onClick={() => navigate("/create")}
-              className="w-full py-4 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]">
+              className="w-full py-4 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]"
+            >
               Create New Wallet
             </button>
             <button
@@ -148,7 +165,9 @@ function Welcome() {
         )}
       </div>
 
-      <p className="absolute bottom-6 text-blue-500/20 text-[10px] font-black uppercase tracking-[0.3em]">PayNest v1.2.0 • Sepolia</p>
+      <p className="absolute bottom-6 text-blue-500/20 text-[10px] font-black uppercase tracking-[0.3em]">
+        PayNest v1.2.0 • Sepolia
+      </p>
     </div>
   );
 }

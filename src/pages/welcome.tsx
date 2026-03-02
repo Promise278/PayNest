@@ -114,7 +114,8 @@ function Welcome() {
             >
               {isUnlocking ? "Unlocking..." : "Unlock Wallet"}
             </button>
-            <button
+
+            {/* <button
               onClick={() => {
                 if (confirm("This will permanently remove your current wallet from this device. Make sure you have your seed phrase saved!")) {
                   localStorage.clear();
@@ -124,7 +125,8 @@ function Welcome() {
               className="w-full text-xs text-gray-600 hover:text-red-500 transition-colors uppercase font-black tracking-widest pt-2"
             >
               Forgot Password?
-            </button>
+            </button> */}
+
           </div>
         ) : (
           /* Initial Setup Flow */

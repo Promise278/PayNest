@@ -14,7 +14,7 @@ function App() {
     <WalletProvider>
       <Router>
         <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
-          <div className="w-[420px] h-[720px] bg-black text-white relative overflow-hidden   border-neutral-900 shadow-2xl overflow-y-auto custom-scrollbar ">
+          <div className="w-[420px] h-[720px] bg-black text-white border-neutral-900 shadow-2xl  ">
             <Routes>
               <Route path="/" element={<Welcome />} />
               <Route path="/create" element={<CreateWallet />} />

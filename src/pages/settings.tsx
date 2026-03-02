@@ -172,7 +172,7 @@ function Settings() {
                   : "bg-gray-800 text-gray-500 cursor-not-allowed"
                   }`}
               >
-              
+                Confirm Reset
               </button>
             </div>
           </div>

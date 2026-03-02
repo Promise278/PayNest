@@ -48,7 +48,7 @@ function Welcome() {
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-linear-to-br from-black via-blue-950/30 to-black animate-gradient" />
 
-      {/* Grid overlay */}
+      {/* Grid overlay */}     
       <div
         className="absolute inset-0 opacity-10"
         style={{

@@ -31,6 +31,7 @@ function App() {
       </Router>
     </WalletProvider>
 import Settings from "./pages/settings";
+import Dashboard from "./pages/dashboard";
 
 function App() {
   return (
@@ -42,7 +43,7 @@ function App() {
           <Route path="/setup" element={<div>Setup</div>} />
           <Route path="/validation" element={<div>Validation</div>} />
           <Route path="/import" element={<div>Import Wallet</div>} />
-          <Route path="/dashboard" element={<div>Dashboard</div>} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/send" element={<div>Send Assets</div>} />
           <Route path="/receive" element={<div>Receive Assets</div>} />
           <Route path="/assets" element={<div>Assets</div>} />

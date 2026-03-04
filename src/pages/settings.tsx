@@ -1,183 +1,198 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getPrivateKey, clearWallet } from "../utils/wallet";
+import { clearTransactions } from "../utils/transactions";
+import { useWallet } from "../context/WalletContext";
 
 const WALLET_STORAGE_KEY = "paynest_wallet";
 
-type StoredWallet = {
-  address: string;
-  mnemonic: string;
-  createdAt?: number;
-};
+type StoredWallet = { address: string; mnemonic: string; createdAt?: number };
+type ModalType = "none" | "seed" | "privateKey" | "reset";
 
 function Settings() {
   const navigate = useNavigate();
-  const [showSeedModal, setShowSeedModal] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false);
+  const { address, logout } = useWallet();
+  const [modal, setModal] = useState<ModalType>("none");
+
+  // Seed phrase
   const [seedConfirmation, setSeedConfirmation] = useState("");
-  const [resetConfirmation, setResetConfirmation] = useState("");
   const [seedVisible, setSeedVisible] = useState(false);
-  const [copyStatus, setCopyStatus] = useState("");
+  const [seedCopied, setSeedCopied] = useState(false);
+
+  // Private key
+  const [pkPassword, setPkPassword] = useState("");
+  const [pkValue, setPkValue] = useState("");
+  const [pkError, setPkError] = useState("");
+  const [pkLoading, setPkLoading] = useState(false);
+  const [pkCopied, setPkCopied] = useState(false);
+
+  // Reset
+  const [resetConfirmation, setResetConfirmation] = useState("");
 
   const storedWallet = useMemo<StoredWallet | null>(() => {
-    const rawWallet = localStorage.getItem(WALLET_STORAGE_KEY);
-    if (!rawWallet) return null;
-
-    try {
-      return JSON.parse(rawWallet) as StoredWallet;
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(localStorage.getItem(WALLET_STORAGE_KEY) || "null"); }
+    catch { return null; }
   }, []);
 
-  const handleSeedExport = () => {
-    setShowSeedModal(true);
-    setSeedConfirmation("");
-    setSeedVisible(false);
-    setCopyStatus("");
+  const openModal = (type: ModalType) => {
+    setModal(type);
+    setSeedConfirmation(""); setSeedVisible(false); setSeedCopied(false);
+    setPkPassword(""); setPkValue(""); setPkError(""); setPkLoading(false); setPkCopied(false);
+    setResetConfirmation("");
   };
 
-  const handleCopySeed = () => {
-    if (!storedWallet?.mnemonic) return;
-    navigator.clipboard.writeText(storedWallet.mnemonic);
-    setCopyStatus("Seed phrase copied.");
-    setTimeout(() => setCopyStatus(""), 2000);
+  const handleRevealPrivateKey = async () => {
+    if (!pkPassword) { setPkError("Please enter your wallet password."); return; }
+    setPkLoading(true); setPkError("");
+    try { setPkValue(await getPrivateKey(pkPassword)); }
+    catch { setPkError("Incorrect password. Please try again."); }
+    finally { setPkLoading(false); }
   };
 
   const handleResetWallet = () => {
+    if (address) clearTransactions(address);
     localStorage.removeItem(WALLET_STORAGE_KEY);
+    clearWallet();
+    logout();
     navigate("/");
   };
 
+  const displayAddress = address || storedWallet?.address;
+
   return (
-    <div className="min-h-full bg-black flex flex-col p-6 text-white">
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white hover:text-blue-400 transition-colors p-2 -ml-2 rounded-full"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <div className="w-8" />
-      </div>
+    <div className="min-h-full bg-black flex flex-col p-6 text-white relative">
 
-      <div className="space-y-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <p className="text-xs uppercase tracking-wider text-blue-400/90 mb-2">Wallet Address</p>
-          <p className="text-sm break-all select-all">
-            {storedWallet?.address ?? "No wallet found. Create or import a wallet first."}
-          </p>
-        </div>
-
-        <button
-          onClick={handleSeedExport}
-          disabled={!storedWallet?.mnemonic}
-          className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
-            ${storedWallet?.mnemonic
-              ? "bg-white/5 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:scale-[1.02] active:scale-[0.98]"
-              : "bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed opacity-60"
-            }`}
-        >
-          Export Seed Phrase
-        </button>
-
-        <button
-          onClick={() => {
-            setShowResetModal(true);
-            setResetConfirmation("");
-          }}
-          className="w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300 bg-red-900/20 border border-red-500/30 text-red-300 hover:bg-red-800/30 hover:scale-[1.02] active:scale-[0.98]"
-        >
-          Logout / Reset Wallet
-        </button>
-      </div>
-
-      {showSeedModal && (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-20">
-          <div className="w-full rounded-xl border border-white/10 bg-neutral-900 p-5">
-            <h2 className="text-lg font-semibold mb-2">Secure Confirmation</h2>
-            <p className="text-sm text-gray-300 mb-4">
-              Type <span className="font-semibold text-white">EXPORT</span> to reveal your seed phrase.
-            </p>
-            <input
-              value={seedConfirmation}
-              onChange={(event) => setSeedConfirmation(event.target.value)}
-              placeholder="Type EXPORT"
-              className="w-full rounded-lg bg-black border border-white/20 px-3 py-2 text-sm outline-none focus:border-blue-500"
-            />
-
+      {/* Seed Modal */}
+      {modal === "seed" && (
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 z-30">
+          <div className="w-full rounded-2xl border border-white/10 bg-neutral-900 p-6 space-y-4">
+            <h2 className="text-lg font-bold">Export Seed Phrase</h2>
+            <p className="text-sm text-gray-400">Type <span className="font-bold text-white">EXPORT</span> to reveal your seed phrase.</p>
+            <input value={seedConfirmation} onChange={(e) => setSeedConfirmation(e.target.value)} placeholder="Type EXPORT" className="w-full rounded-xl bg-black border border-white/10 px-4 py-3 text-sm outline-none focus:border-blue-500 transition-colors" />
             {seedVisible && storedWallet?.mnemonic && (
-              <div className="mt-4 p-3 rounded-lg bg-black border border-blue-500/30">
-                <p className="text-xs text-blue-400 mb-1">Seed Phrase</p>
-                <p className="text-sm break-words select-all">{storedWallet.mnemonic}</p>
-                <button
-                  onClick={handleCopySeed}
-                  className="mt-3 text-sm text-blue-400 hover:text-blue-300"
-                >
-                  Copy Seed Phrase
+              <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                <p className="text-xs text-blue-400 mb-2 font-semibold uppercase tracking-widest">Seed Phrase</p>
+                <p className="text-sm break-words select-all leading-relaxed font-mono text-white">{storedWallet.mnemonic}</p>
+                <button onClick={() => { navigator.clipboard.writeText(storedWallet.mnemonic); setSeedCopied(true); setTimeout(() => setSeedCopied(false), 2000); }}
+                  className={`mt-3 text-sm font-semibold transition-colors ${seedCopied ? "text-green-400" : "text-blue-400 hover:text-blue-300"}`}>
+                  {seedCopied ? "✓ Copied!" : "Copy Seed Phrase"}
                 </button>
-                {copyStatus && <p className="text-xs text-green-400 mt-1">{copyStatus}</p>}
               </div>
             )}
-
-            <div className="flex gap-3 mt-5">
-              <button
-                onClick={() => setShowSeedModal(false)}
-                className="flex-1 py-2 rounded-lg border border-white/20 text-gray-300 hover:bg-white/5"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={seedConfirmation !== "EXPORT"}
-                onClick={() => setSeedVisible(true)}
-                className={`flex-1 py-2 rounded-lg font-semibold ${seedConfirmation === "EXPORT"
-                  ? "bg-blue-600 hover:bg-blue-500 text-white"
-                  : "bg-gray-800 text-gray-500 cursor-not-allowed"
-                  }`}
-              >
-                Confirm Export
+            <div className="flex gap-3">
+              <button onClick={() => setModal("none")} className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Cancel</button>
+              <button disabled={seedConfirmation !== "EXPORT"} onClick={() => setSeedVisible(true)}
+                className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${seedConfirmation === "EXPORT" ? "bg-blue-600 hover:bg-blue-500 text-white" : "bg-gray-800 text-gray-500 cursor-not-allowed"}`}>
+                Reveal
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {showResetModal && (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-20">
-          <div className="w-full rounded-xl border border-red-500/30 bg-neutral-900 p-5">
-            <h2 className="text-lg font-semibold mb-2 text-red-300">Reset Wallet</h2>
-            <p className="text-sm text-gray-300 mb-4">
-              This will remove wallet data from this device. Type <span className="font-semibold text-white">RESET</span> to continue.
-            </p>
-            <input
-              value={resetConfirmation}
-              onChange={(event) => setResetConfirmation(event.target.value)}
-              placeholder="Type RESET"
-              className="w-full rounded-lg bg-black border border-white/20 px-3 py-2 text-sm outline-none focus:border-red-500"
-            />
-            <div className="flex gap-3 mt-5">
-              <button
-                onClick={() => setShowResetModal(false)}
-                className="flex-1 py-2 rounded-lg border border-white/20 text-gray-300 hover:bg-white/5"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={resetConfirmation !== "RESET"}
-                onClick={handleResetWallet}
-                className={`flex-1 py-2 rounded-lg font-semibold ${resetConfirmation === "RESET"
-                  ? "bg-red-600 hover:bg-red-500 text-white"
-                  : "bg-gray-800 text-gray-500 cursor-not-allowed"
-                  }`}
-              >
+      {/* Private Key Modal */}
+      {modal === "privateKey" && (
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 z-30">
+          <div className="w-full rounded-2xl border border-red-500/30 bg-neutral-900 p-6 space-y-4">
+            <div className="flex gap-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <svg className="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <div>
+                <p className="text-sm font-bold text-red-400">⚠ Never share your private key</p>
+                <p className="text-xs text-red-300/60 mt-0.5 leading-relaxed">Anyone with your private key has full control of your wallet and all its funds.</p>
+              </div>
+            </div>
+            <h2 className="text-lg font-bold">Export Private Key</h2>
+            <p className="text-sm text-gray-400">Enter your wallet password to reveal your private key.</p>
+            <input type="password" value={pkPassword} onChange={(e) => setPkPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleRevealPrivateKey()}
+              placeholder="Wallet password"
+              className="w-full rounded-xl bg-black border border-white/10 px-4 py-3 text-sm outline-none focus:border-red-500 transition-colors" />
+            {pkError && <p className="text-xs text-red-400 font-semibold">{pkError}</p>}
+            {pkValue && (
+              <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                <p className="text-xs text-red-400 mb-2 font-semibold uppercase tracking-widest">Private Key</p>
+                <p className="text-xs break-all select-all font-mono text-white/80 leading-relaxed">{pkValue}</p>
+                <button onClick={() => { navigator.clipboard.writeText(pkValue); setPkCopied(true); setTimeout(() => setPkCopied(false), 2000); }}
+                  className={`mt-3 text-sm font-semibold transition-colors ${pkCopied ? "text-green-400" : "text-red-400 hover:text-red-300"}`}>
+                  {pkCopied ? "✓ Copied!" : "Copy Private Key"}
+                </button>
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button onClick={() => setModal("none")} className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Close</button>
+              {!pkValue && (
+                <button disabled={pkLoading || !pkPassword} onClick={handleRevealPrivateKey}
+                  className={`flex-1 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 ${pkLoading || !pkPassword ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-red-600 hover:bg-red-500 text-white"}`}>
+                  {pkLoading ? (<><svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>Decrypting…</>) : "Reveal Key"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Modal */}
+      {modal === "reset" && (
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 z-30">
+          <div className="w-full rounded-2xl border border-red-500/30 bg-neutral-900 p-6 space-y-4">
+            <h2 className="text-lg font-bold text-red-300">Reset Wallet</h2>
+            <p className="text-sm text-gray-300 leading-relaxed">⚠ This removes all wallet data from this device. Make sure you have your seed phrase. Type <span className="font-bold text-white">RESET</span> to continue.</p>
+            <input value={resetConfirmation} onChange={(e) => setResetConfirmation(e.target.value)} placeholder="Type RESET" className="w-full rounded-xl bg-black border border-white/10 px-4 py-3 text-sm outline-none focus:border-red-500 transition-colors" />
+            <div className="flex gap-3">
+              <button onClick={() => setModal("none")} className="flex-1 py-3 rounded-xl border border-white/10 text-gray-400 hover:bg-white/5 transition-colors">Cancel</button>
+              <button disabled={resetConfirmation !== "RESET"} onClick={handleResetWallet}
+                className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${resetConfirmation === "RESET" ? "bg-red-600 hover:bg-red-500 text-white" : "bg-gray-800 text-gray-500 cursor-not-allowed"}`}>
                 Confirm Reset
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Page Content */}
+      <div className="flex items-center justify-between mb-8">
+        <button onClick={() => navigate(-1)} className="text-white hover:text-blue-400 transition-colors p-2 -ml-2 rounded-full">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <h1 className="text-2xl font-bold">Settings</h1>
+        <div className="w-8" />
+      </div>
+
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <p className="text-xs uppercase tracking-widest text-blue-400/90 mb-2 font-bold">Wallet Address</p>
+          <p className="text-sm break-all select-all font-mono text-gray-300">{displayAddress ?? "No wallet found."}</p>
+        </div>
+
+        <button onClick={() => openModal("seed")} disabled={!storedWallet?.mnemonic}
+          className={`w-full py-4 px-5 font-semibold rounded-2xl transition-all duration-300 text-left flex items-center justify-between ${storedWallet?.mnemonic ? "bg-white/5 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:scale-[1.02] active:scale-[0.98]" : "bg-white/5 border border-white/10 text-gray-500 cursor-not-allowed opacity-50"}`}>
+          <span className="flex items-center gap-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            Export Seed Phrase
+          </span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
+
+        <button onClick={() => openModal("privateKey")}
+          className="w-full py-4 px-5 font-semibold rounded-2xl transition-all duration-300 text-left flex items-center justify-between bg-red-900/10 border border-red-500/20 text-red-400 hover:bg-red-500/10 hover:scale-[1.02] active:scale-[0.98]">
+          <span className="flex items-center gap-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+            Export Private Key
+          </span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
+
+        <button onClick={() => openModal("reset")}
+          className="w-full py-4 px-5 font-semibold rounded-2xl transition-all duration-300 text-left flex items-center justify-between bg-red-900/20 border border-red-500/30 text-red-300 hover:bg-red-800/30 hover:scale-[1.02] active:scale-[0.98]">
+          <span className="flex items-center gap-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            Logout / Reset Wallet
+          </span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+      <p className="mt-auto pt-8 text-center text-xs text-gray-700">PayNest • Browser Wallet Extension</p>
     </div>
   );
 }

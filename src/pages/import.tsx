@@ -66,8 +66,9 @@ function ImportWallet() {
             await saveNewWallet(phrase, password);
             await connectWallet(password);
             navigate("/dashboard");
-        } catch (err: any) {
-            setError(err.message || "Failed to import wallet");
+        } catch (err) {
+            const e = err as { message?: string };
+            setError(e.message || "Failed to import wallet");
             setIsSaving(false);
         }
     };
@@ -164,8 +165,8 @@ function ImportWallet() {
                         onClick={handleImport}
                         disabled={isSaving}
                         className={`w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 mt-auto shadow-lg ${isSaving
-                                ? 'bg-blue-600/50 text-white/50 cursor-not-allowed'
-                                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
+                            ? 'bg-blue-600/50 text-white/50 cursor-not-allowed'
+                            : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
                             }`}
                     >
                         {isSaving ? (

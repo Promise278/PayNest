@@ -50,36 +50,38 @@ function SendAssets() {
     if (status === "success") {
         return (
             <div className="min-h-full bg-black flex flex-col items-center justify-center p-6 animate-fade-in-up">
-                <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mb-6">
+                <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 mb-6">
                     <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
                 <h2 className="text-2xl font-bold mb-2 text-center text-white">Payment Sent!</h2>
-                <p className="text-blue-400/70 text-center text-sm mb-8 px-4 font-mono">{txHash.slice(0, 10)}...{txHash.slice(-10)}</p>
-                <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
+                <p className="text-zinc-500 text-center text-sm mb-8 px-4 font-mono">{txHash.slice(0, 10)}...{txHash.slice(-10)}</p>
+
+                <div className="w-full bg-zinc-900 border border-white/5 rounded-2xl p-6 mb-8">
                     <div className="flex justify-between mb-4">
-                        <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Amount</span>
+                        <span className="text-zinc-500 text-sm font-semibold uppercase tracking-wider">Amount</span>
                         <span className="text-white font-bold">{amount} {activeNetwork.symbol}</span>
                     </div>
                     <div className="flex justify-between mb-4">
-                        <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">To</span>
-                        <span className="text-blue-400 font-mono text-sm">{recipient.slice(0, 6)}...{recipient.slice(-4)}</span>
+                        <span className="text-zinc-500 text-sm font-semibold uppercase tracking-wider">To</span>
+                        <span className="text-zinc-300 font-mono text-sm">{recipient.slice(0, 6)}...{recipient.slice(-4)}</span>
                     </div>
                     <div className="flex justify-between">
-                        <span className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Network</span>
-                        <span className="text-gray-300 text-sm">{activeNetwork.shortName}</span>
+                        <span className="text-zinc-500 text-sm font-semibold uppercase tracking-wider">Network</span>
+                        <span className="text-zinc-300 text-sm">{activeNetwork.shortName}</span>
                     </div>
                 </div>
+
                 <div className="space-y-3 w-full">
                     <button
                         onClick={() => window.open(`${activeNetwork.explorerUrl}/tx/${txHash}`, "_blank")}
-                        className="w-full py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-blue-400 font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
+                        className="w-full py-4 bg-zinc-900 border border-white/5 hover:bg-zinc-800 text-zinc-300 hover:text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2"
                     >
                         View on {activeNetwork.explorerName}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </button>
-                    <button onClick={() => navigate("/dashboard")} className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/20">
+                    <button onClick={() => navigate("/dashboard")} className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg active:scale-[0.98]">
                         Done
                     </button>
                 </div>
@@ -90,30 +92,30 @@ function SendAssets() {
     return (
         <div className="min-h-full bg-black flex flex-col p-6 animate-fade-in-up">
             <div className="flex items-center mb-10">
-                <button onClick={() => navigate("/dashboard")} className="p-2 -ml-2 rounded-full text-gray-400 hover:text-white transition-colors">
+                <button onClick={() => navigate("/dashboard")} className="p-2 -ml-2 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <div className="ml-2">
-                    <h1 className="text-xl font-black uppercase tracking-tight">Send Assets</h1>
-                    <p className="text-xs text-gray-500">{activeNetwork.shortName}</p>
+                    <h1 className="text-xl font-black uppercase tracking-tight text-white">Send Assets</h1>
+                    <p className="text-xs text-zinc-500">{activeNetwork.shortName}</p>
                 </div>
             </div>
 
             <div className="flex-1 space-y-8">
                 <div>
-                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Recipient Address</label>
+                    <label className="block text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Recipient Address</label>
                     <input
                         type="text"
                         value={recipient}
                         onChange={(e) => setRecipient(e.target.value)}
                         placeholder="0x..."
-                        className="w-full bg-neutral-900/50 border border-white/5 rounded-[1.25rem] px-5 py-4 text-white placeholder:text-gray-700 focus:outline-none focus:border-blue-500/50 transition-all focus:ring-4 focus:ring-blue-500/10 font-mono text-sm"
+                        className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-5 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-white/30 transition-all font-mono text-sm"
                     />
                 </div>
                 <div>
                     <div className="flex justify-between mb-3">
-                        <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest">Amount</label>
-                        <span className="text-[10px] text-blue-400/70 font-black uppercase tracking-widest">Available: {parseFloat(balance).toFixed(4)} {activeNetwork.symbol}</span>
+                        <label className="block text-[10px] font-black text-zinc-500 uppercase tracking-widest">Amount</label>
+                        <span className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Available: {parseFloat(balance).toFixed(4)} {activeNetwork.symbol}</span>
                     </div>
                     <div className="relative">
                         <input
@@ -121,11 +123,16 @@ function SendAssets() {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="0.00"
-                            className="w-full bg-neutral-900/50 border border-white/5 rounded-[1.25rem] px-5 py-5 text-white text-3xl font-black placeholder:text-gray-700 focus:outline-none focus:border-blue-500/50 transition-all focus:ring-4 focus:ring-blue-500/10"
+                            className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-5 py-5 text-white text-3xl font-black placeholder:text-zinc-600 focus:outline-none focus:border-white/30 transition-all"
                         />
                         <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3">
-                            <span className="text-sm font-black text-gray-500">{activeNetwork.symbol}</span>
-                            <button onClick={() => setAmount(balance)} className="text-blue-500 text-[10px] font-black hover:text-blue-400 px-3 py-1.5 bg-blue-500/10 rounded-lg border border-blue-500/20 transition-colors">MAX</button>
+                            <span className="text-sm font-black text-zinc-500">{activeNetwork.symbol}</span>
+                            <button
+                                onClick={() => setAmount(balance)}
+                                className="text-black text-[10px] font-black bg-white hover:bg-zinc-200 px-3 py-1.5 rounded-lg transition-colors"
+                            >
+                                MAX
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -140,12 +147,12 @@ function SendAssets() {
             <button
                 disabled={status === "sending" || !wallet}
                 onClick={handleSend}
-                className={`w-full py-5 rounded-[1.5rem] font-black text-lg transition-all flex items-center justify-center gap-3 mt-10 shadow-2xl ${status === "sending" ? "bg-blue-600/50 text-white/50 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20 hover:scale-[1.02] active:scale-[0.98]"
+                className={`w-full py-5 rounded-[1.5rem] font-black text-lg transition-all flex items-center justify-center gap-3 mt-10 shadow-2xl ${status === "sending" ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" : "bg-white hover:bg-zinc-200 text-black shadow-white/10 hover:scale-[1.02] active:scale-[0.98]"
                     }`}
             >
                 {status === "sending" ? (
                     <>
-                        <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-6 w-6 text-zinc-500" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>

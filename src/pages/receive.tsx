@@ -15,51 +15,52 @@ function ReceiveAssets() {
     };
 
     const qrCodeUrl = address
-        ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${address}&bgcolor=000000&color=3b82f6&margin=15`
+        ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${address}&bgcolor=000000&color=ffffff&margin=15`
         : "";
 
     return (
         <div className="min-h-full bg-black flex flex-col p-6 animate-fade-in-up">
             <div className="flex items-center mb-8">
-                <button onClick={() => navigate("/dashboard")} className="p-2 -ml-2 rounded-full text-gray-400 hover:text-white transition-colors">
+                <button onClick={() => navigate("/dashboard")} className="p-2 -ml-2 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 <div className="ml-2">
-                    <h1 className="text-xl font-bold">Receive Assets</h1>
-                    <p className="text-xs text-gray-500">{activeNetwork.shortName}</p>
+                    <h1 className="text-xl font-bold text-white">Receive Assets</h1>
+                    <p className="text-xs text-zinc-500">{activeNetwork.shortName}</p>
                 </div>
             </div>
 
             <div className="flex-1 flex flex-col items-center">
-                <p className="text-gray-400 text-center text-xs mb-8 px-4 leading-relaxed">
+                <p className="text-zinc-400 text-center text-xs mb-8 px-4 leading-relaxed">
                     Scan this QR code or copy the address below to receive{" "}
-                    <span className="text-blue-400 font-bold">{activeNetwork.symbol}</span> on{" "}
-                    <span className="text-blue-400 font-bold">{activeNetwork.name}</span>.
+                    <span className="text-white font-bold">{activeNetwork.symbol}</span> on{" "}
+                    <span className="text-white font-bold">{activeNetwork.name}</span>.
                 </p>
 
-                <div className="relative p-5 rounded-3xl bg-white mb-8 shadow-2xl shadow-blue-600/20">
+                {/* Changed QR code to white for sleek aesthetic via API 'color=ffffff' above, bg to dark */}
+                <div className="relative p-5 rounded-3xl bg-zinc-900 border border-white/5 mb-8 shadow-2xl shadow-black/80">
                     {address ? (
                         <img src={qrCodeUrl} alt="Wallet QR Code" className="w-48 h-48 block" />
                     ) : (
-                        <div className="w-48 h-48 bg-gray-100 flex items-center justify-center">
-                            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-48 h-48 bg-zinc-900 flex items-center justify-center">
+                            <div className="w-8 h-8 border-4 border-zinc-700 border-t-white rounded-full animate-spin" />
                         </div>
                     )}
                 </div>
 
-                <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-                    <label className="block text-[10px] uppercase tracking-[0.2em] font-black text-blue-500 mb-3">
+                <div className="w-full bg-zinc-900 border border-white/5 rounded-2xl p-5 mb-6">
+                    <label className="block text-[10px] uppercase tracking-[0.2em] font-black text-zinc-500 mb-3">
                         Your {activeNetwork.shortName} Address
                     </label>
-                    <p className="text-white font-mono break-all text-xs leading-relaxed mb-5 bg-white/5 p-3 rounded-lg border border-white/5 select-all">
+                    <p className="text-white font-mono break-all text-xs leading-relaxed mb-5 bg-black p-3 rounded-lg border border-white/5 select-all">
                         {address || "Loading..."}
                     </p>
                     <button
                         onClick={handleCopy}
                         disabled={!address}
                         className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${copied
-                                ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/20 active:scale-[0.98]"
+                                ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                                : "bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10 active:scale-[0.98]"
                             }`}
                     >
                         {copied ? (
@@ -82,7 +83,7 @@ function ReceiveAssets() {
                 )}
             </div>
 
-            <button onClick={() => navigate("/dashboard")} className="mt-6 py-2 text-gray-500 font-bold text-xs hover:text-white transition-colors uppercase tracking-widest">
+            <button onClick={() => navigate("/dashboard")} className="mt-6 py-2 text-zinc-600 font-bold text-xs hover:text-white transition-colors uppercase tracking-widest">
                 Return to Home
             </button>
         </div>

@@ -37,7 +37,6 @@ function Welcome() {
         setError("Incorrect password");
       }
     } catch (err: unknown) {
-      // log for debugging but don’t expose details to user
       console.error("unlock error", err);
       setError("Unlock failed");
     } finally {
@@ -48,14 +47,14 @@ function Welcome() {
   return (
     <div className="min-h-full bg-black flex flex-col items-center justify-center p-6 overflow-hidden relative">
       {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-linear-to-br from-black via-blue-950/30 to-black animate-gradient" />
+      <div className="absolute inset-0 bg-linear-to-br from-black via-zinc-900/40 to-black animate-gradient" />
 
       {/* Grid overlay */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: `linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)`,
           backgroundSize: "40px 40px",
         }}
       />
@@ -64,7 +63,7 @@ function Welcome() {
       {particles.map((particle) => (
         <div
           key={particle.id}
-          className="absolute rounded-full bg-blue-500/60 animate-float"
+          className="absolute rounded-full bg-white/20 animate-float"
           style={{
             left: `${particle.left}%`,
             bottom: "-10px",
@@ -79,16 +78,16 @@ function Welcome() {
       {/* Content */}
       <div className="flex flex-col items-center space-y-6 relative z-10 w-full">
         <div className="relative">
-          <div className="absolute -inset-4 rounded-full border border-blue-500/20 animate-ring-pulse" />
+          <div className="absolute -inset-4 rounded-full border border-white/10 animate-ring-pulse" />
           <div
-            className="absolute -inset-8 rounded-full border border-blue-500/10 animate-ring-pulse"
+            className="absolute -inset-8 rounded-full border border-white/5 animate-ring-pulse"
             style={{ animationDelay: "0.5s" }}
           />
 
           {/* Logo */}
-          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-blue-500 animate-logo-pulse bg-black/50 backdrop-blur">
-            <p className="text-blue-500 text-2xl font-black italic">
-              Pay<span className="text-white">Nest</span>{" "}
+          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-zinc-800 animate-logo-pulse bg-zinc-950/80 backdrop-blur">
+            <p className="text-white text-2xl font-black italic">
+              PayNest{" "}
             </p>
           </div>
         </div>
@@ -98,8 +97,8 @@ function Welcome() {
           style={{ animationDelay: "0.2s" }}
         >
           <h1 className="text-2xl font-black text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-500 text-sm">
-            Your secure gateway to the blockchain
+          <p className="text-zinc-500 text-sm">
+            Your sleek gateway to the blockchain
           </p>
         </div>
 
@@ -115,7 +114,7 @@ function Welcome() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 transition-all font-bold"
+                className="w-full bg-zinc-900/80 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 transition-all font-bold"
               />
             </div>
             {error && (
@@ -126,22 +125,10 @@ function Welcome() {
             <button
               onClick={handleUnlock}
               disabled={isUnlocking}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-3 active:scale-[0.98]"
+              className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-3 active:scale-[0.98]"
             >
               {isUnlocking ? "Unlocking..." : "Unlock Wallet"}
             </button>
-
-            {/* <button
-              onClick={() => {
-                if (confirm("This will permanently remove your current wallet from this device. Make sure you have your seed phrase saved!")) {
-                  localStorage.clear();
-                  window.location.reload();
-                }
-              }}
-              className="w-full text-xs text-gray-600 hover:text-red-500 transition-colors uppercase font-black tracking-widest pt-2"
-            >
-              Forgot Password?
-            </button> */}
           </div>
         ) : (
           /* Initial Setup Flow */
@@ -151,13 +138,13 @@ function Welcome() {
           >
             <button
               onClick={() => navigate("/create")}
-              className="w-full py-4 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg shadow-white/5 hover:scale-[1.02] active:scale-[0.98]"
             >
               Create New Wallet
             </button>
             <button
               onClick={() => navigate("/import")}
-              className="w-full py-4 bg-white/5 backdrop-blur border border-white/10 text-gray-300 hover:bg-white/10 hover:border-blue-500/30 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-4 bg-zinc-900 backdrop-blur border border-white/5 text-zinc-300 hover:bg-zinc-800 hover:border-white/20 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Import Wallet
             </button>
@@ -165,8 +152,8 @@ function Welcome() {
         )}
       </div>
 
-      <p className="absolute bottom-6 text-blue-500/20 text-[10px] font-black uppercase tracking-[0.3em]">
-        PayNest v1.2.0 • Sepolia
+      <p className="absolute bottom-6 text-zinc-700 text-[10px] font-black uppercase tracking-[0.3em]">
+        PayNest v1.2.0 • Sleek Focus
       </p>
     </div>
   );

@@ -122,7 +122,7 @@ function CreateWallet() {
           {error && <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">{error}</div>}
         </div>
         <button onClick={handleSaveWallet} disabled={isSaving}
-          className="w-full py-4 bg-white hover:bg-zinc-200 disabled:bg-zinc-800 disabled:text-zinc-500 text-black font-bold rounded-2xl transition-all shadow-lg mt-6">
+          className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-500/20 mt-6 active:scale-[0.98]">
           Finish Setup
         </button>
       </div>
@@ -171,7 +171,7 @@ function CreateWallet() {
             }
           </button>
           <button disabled={!isRevealed && !hasCopied} onClick={handleWalletConfirm}
-            className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300 ${isRevealed || hasCopied ? "bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10 hover:scale-[1.02] active:scale-[0.98]" : "bg-zinc-900 text-zinc-600 cursor-not-allowed"}`}>
+            className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300 ${isRevealed || hasCopied ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]" : "bg-zinc-900 text-zinc-600 cursor-not-allowed"}`}>
             I saved my seed phrase
           </button>
         </div>

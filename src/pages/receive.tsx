@@ -43,7 +43,7 @@ function ReceiveAssets() {
                         <img src={qrCodeUrl} alt="Wallet QR Code" className="w-48 h-48 block" />
                     ) : (
                         <div className="w-48 h-48 bg-zinc-900 flex items-center justify-center">
-                            <div className="w-8 h-8 border-4 border-zinc-700 border-t-white rounded-full animate-spin" />
+                            <div className="w-8 h-8 border-4 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin" />
                         </div>
                     )}
                 </div>
@@ -59,8 +59,8 @@ function ReceiveAssets() {
                         onClick={handleCopy}
                         disabled={!address}
                         className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${copied
-                                ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                                : "bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10 active:scale-[0.98]"
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-inner"
+                            : "bg-white hover:bg-zinc-200 text-black shadow-lg shadow-white/10 active:scale-[0.98]"
                             }`}
                     >
                         {copied ? (

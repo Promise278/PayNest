@@ -50,8 +50,8 @@ function SendAssets() {
     if (status === "success") {
         return (
             <div className="min-h-full bg-black flex flex-col items-center justify-center p-6 animate-fade-in-up">
-                <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-500 mb-6">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 shadow-inner">
+                    <svg className="w-10 h-10 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
@@ -147,7 +147,7 @@ function SendAssets() {
             <button
                 disabled={status === "sending" || !wallet}
                 onClick={handleSend}
-                className={`w-full py-5 rounded-[1.5rem] font-black text-lg transition-all flex items-center justify-center gap-3 mt-10 shadow-2xl ${status === "sending" ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" : "bg-white hover:bg-zinc-200 text-black shadow-white/10 hover:scale-[1.02] active:scale-[0.98]"
+                className={`w-full py-5 rounded-3xl font-black text-lg transition-all flex items-center justify-center gap-3 mt-10 shadow-2xl ${status === "sending" ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" : "bg-white hover:bg-zinc-200 text-black shadow-white/10 hover:scale-[1.02] active:scale-[0.98]"
                     }`}
             >
                 {status === "sending" ? (

@@ -15,8 +15,10 @@ function Settings() {
   const [modal, setModal] = useState<ModalType>("none");
 
   // Seed phrase
-  const [seedConfirmation, setSeedConfirmation] = useState("");
+  const [seedPassword, setSeedPassword] = useState("");
   const [seedVisible, setSeedVisible] = useState(false);
+  const [seedError, setSeedError] = useState("");
+  const [seedLoading, setSeedLoading] = useState(false);
   const [seedCopied, setSeedCopied] = useState(false);
 
   // Private key
@@ -36,9 +38,23 @@ function Settings() {
 
   const openModal = (type: ModalType) => {
     setModal(type);
-    setSeedConfirmation(""); setSeedVisible(false); setSeedCopied(false);
+    setSeedPassword(""); setSeedVisible(false); setSeedError(""); setSeedLoading(false); setSeedCopied(false);
     setPkPassword(""); setPkValue(""); setPkError(""); setPkLoading(false); setPkCopied(false);
     setResetConfirmation("");
+  };
+
+  const handleRevealSeed = async () => {
+    if (!seedPassword) { setSeedError("Please enter your wallet password."); return; }
+    setSeedLoading(true); setSeedError("");
+    try {
+      // Just test if the password can decrypt the private key to verify it
+      await getPrivateKey(seedPassword);
+      setSeedVisible(true);
+    } catch {
+      setSeedError("Incorrect password. Please try again.");
+    } finally {
+      setSeedLoading(false);
+    }
   };
 
   const handleRevealPrivateKey = async () => {
@@ -67,24 +83,32 @@ function Settings() {
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 z-30">
           <div className="w-full rounded-2xl border border-white/10 bg-zinc-950 p-6 space-y-4 shadow-2xl shadow-black/80">
             <h2 className="text-lg font-bold">Export Seed Phrase</h2>
-            <p className="text-sm text-zinc-400">Type <span className="font-bold text-white">EXPORT</span> to reveal your seed phrase.</p>
-            <input value={seedConfirmation} onChange={(e) => setSeedConfirmation(e.target.value)} placeholder="Type EXPORT" className="w-full rounded-xl bg-zinc-900 border border-white/5 px-4 py-3 text-sm outline-none focus:border-white/30 transition-colors" />
+            <p className="text-sm text-zinc-400">Enter your wallet password to reveal your seed phrase.</p>
+            <input type="password" value={seedPassword} onChange={(e) => setSeedPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleRevealSeed()}
+              placeholder="Wallet password"
+              className="w-full rounded-xl bg-zinc-900 border border-white/5 px-4 py-3 text-sm outline-none focus:border-white/30 transition-colors" />
+            {seedError && <p className="text-xs text-red-500 font-semibold">{seedError}</p>}
+
             {seedVisible && storedWallet?.mnemonic && (
               <div className="p-4 rounded-xl bg-zinc-900 border border-white/5">
                 <p className="text-xs text-zinc-500 mb-2 font-semibold uppercase tracking-widest">Seed Phrase</p>
-                <p className="text-sm break-words select-all leading-relaxed font-mono text-white">{storedWallet.mnemonic}</p>
+                <p className="text-sm break-all select-all leading-relaxed font-mono text-white">{storedWallet.mnemonic}</p>
                 <button onClick={() => { navigator.clipboard.writeText(storedWallet.mnemonic); setSeedCopied(true); setTimeout(() => setSeedCopied(false), 2000); }}
                   className={`mt-3 text-sm font-semibold transition-colors ${seedCopied ? "text-green-400" : "text-zinc-300 hover:text-white"}`}>
                   {seedCopied ? "✓ Copied!" : "Copy Seed Phrase"}
                 </button>
               </div>
             )}
+
             <div className="flex gap-3">
-              <button onClick={() => setModal("none")} className="flex-1 py-3 rounded-xl border border-white/10 text-zinc-400 hover:bg-white/5 transition-colors">Cancel</button>
-              <button disabled={seedConfirmation !== "EXPORT"} onClick={() => setSeedVisible(true)}
-                className={`flex-1 py-3 rounded-xl font-bold transition-colors ${seedConfirmation === "EXPORT" ? "bg-white hover:bg-zinc-200 text-black shadow-lg" : "bg-zinc-900 text-zinc-600 cursor-not-allowed"}`}>
-                Reveal
-              </button>
+              <button onClick={() => setModal("none")} className="flex-1 py-3 rounded-xl border border-white/10 text-zinc-400 hover:bg-white/5 transition-colors">Close</button>
+              {!seedVisible && (
+                <button disabled={seedLoading || !seedPassword} onClick={handleRevealSeed}
+                  className={`flex-1 py-3 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 ${seedLoading || !seedPassword ? "bg-zinc-900 text-zinc-600 cursor-not-allowed" : "bg-white hover:bg-zinc-200 text-black shadow-lg"}`}>
+                  {seedLoading ? (<><svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>Verifying…</>) : "Reveal Phrase"}
+                </button>
+              )}
             </div>
           </div>
         </div>

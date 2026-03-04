@@ -85,7 +85,7 @@ function Welcome() {
           />
 
           {/* Logo */}
-          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-zinc-800 animate-logo-pulse bg-zinc-950/80 backdrop-blur">
+          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-indigo-500/30 animate-logo-pulse bg-linear-to-br from-indigo-500 to-purple-600 shadow-2xl shadow-indigo-500/20">
             <p className="text-white text-2xl font-black italic">
               PayNest{" "}
             </p>
@@ -125,7 +125,7 @@ function Welcome() {
             <button
               onClick={handleUnlock}
               disabled={isUnlocking}
-              className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg shadow-white/10 flex items-center justify-center gap-3 active:scale-[0.98]"
+              className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-3 active:scale-[0.98]"
             >
               {isUnlocking ? "Unlocking..." : "Unlock Wallet"}
             </button>
@@ -138,13 +138,13 @@ function Welcome() {
           >
             <button
               onClick={() => navigate("/create")}
-              className="w-full py-4 bg-white hover:bg-zinc-200 text-black font-bold rounded-2xl transition-all shadow-lg shadow-white/5 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]"
             >
               Create New Wallet
             </button>
             <button
               onClick={() => navigate("/import")}
-              className="w-full py-4 bg-zinc-900 backdrop-blur border border-white/5 text-zinc-300 hover:bg-zinc-800 hover:border-white/20 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-4 bg-zinc-900 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/10 font-bold rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Import Wallet
             </button>

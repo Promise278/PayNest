@@ -105,7 +105,7 @@ function Assets() {
       </div>
 
       {/* Add Token Button */}
-      <button className="w-full py-4 bg-zinc-900 border border-white/5 hover:bg-zinc-800 text-zinc-300 hover:text-white font-bold rounded-2xl transition-colors duration-200 mt-6 flex items-center justify-center space-x-2">
+      <button className="w-full py-4 bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-400 font-bold rounded-2xl transition-colors duration-200 mt-6 flex items-center justify-center space-x-2 active:scale-[0.98]">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>

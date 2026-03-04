@@ -19,8 +19,8 @@ function ReceiveAssets() {
         : "";
 
     return (
-        <div className="min-h-full bg-black flex flex-col p-6 animate-fade-in-up">
-            <div className="flex items-center mb-8">
+        <div className="h-full overflow-y-auto bg-black flex flex-col p-6 animate-fade-in-up">
+            <div className="flex items-center mb-8 shrink-0">
                 <button onClick={() => navigate("/dashboard")} className="p-2 -ml-2 rounded-full text-zinc-400 hover:text-white transition-colors">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                 </button>

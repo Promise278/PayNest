@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { JsonRpcProvider, HDNodeWallet, Wallet } from "ethers";
 import { getBalance, loadWallet } from "../utils/wallet";
 import { NETWORKS, getSavedNetworkId, saveNetworkId, type Network } from "../utils/networks";
-import { loadTransactions, saveTransaction, type Transaction } from "../utils/transactions";
+import { loadTransactions, saveTransaction, syncTransactionsFromExplorer, type Transaction } from "../utils/transactions";
 
 interface WalletContextType {
     address: string | null;
@@ -46,6 +46,16 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         try {
             const bal = await getBalance(address, activeNetworkId);
             setBalance(bal);
+
+            const network = NETWORKS[activeNetworkId];
+            if (network) {
+                syncTransactionsFromExplorer(address, network).then(() => {
+                    setTransactions(prev => {
+                        const updated = loadTransactions(address);
+                        return JSON.stringify(prev) !== JSON.stringify(updated) ? updated : prev;
+                    });
+                });
+            }
         } catch (error) {
             console.error("Failed to fetch balance:", error);
         } finally {

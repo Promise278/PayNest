@@ -13,7 +13,7 @@ function App() {
   return (
     <WalletProvider>
       <Router>
-        <div className=" bg-neutral-950 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
           <div className="w-90 h-150 bg-black text-white border-neutral-900 shadow-2xl">
             <Routes>
               <Route path="/" element={<Welcome />} />

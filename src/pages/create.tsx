@@ -52,8 +52,9 @@ function CreateWallet() {
       } else {
         setError("Failed to initialize wallet");
       }
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError(message || "An error occurred");
     } finally {
       setIsSaving(false);
     }

@@ -5,14 +5,16 @@ import ImportWallet from "./pages/import";
 import Dashboard from "./pages/dashboard";
 import SendAssets from "./pages/send";
 import ReceiveAssets from "./pages/receive";
+import Settings from "./pages/settings";
 import { WalletProvider } from "./context/WalletContext";
+import Assets from "./pages/assets";
 
 function App() {
   return (
     <WalletProvider>
       <Router>
         <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
-          <div className="w-[420px] h-[720px] bg-black text-white relative overflow-hidden rounded-[3rem] border-[12px] border-neutral-900 shadow-2xl overflow-y-auto custom-scrollbar ">
+          <div className="w-[420px] h-[720px] bg-black text-white border-neutral-900 shadow-2xl  ">
             <Routes>
               <Route path="/" element={<Welcome />} />
               <Route path="/create" element={<CreateWallet />} />
@@ -22,8 +24,8 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/send" element={<SendAssets />} />
               <Route path="/receive" element={<ReceiveAssets />} />
-              <Route path="/assets" element={<div>Assets</div>} />
-              <Route path="/settings" element={<div>Settings</div>} />
+              <Route path="/assets" element={<Assets />} />
+              <Route path="/settings" element={<Settings/>} />
             </Routes>
           </div>
         </div>

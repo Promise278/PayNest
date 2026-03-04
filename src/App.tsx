@@ -31,8 +31,6 @@ function App() {
         </div>
       </Router>
     </WalletProvider>
-
-  );
+  )
 }
-
 export default App;

@@ -9,8 +9,6 @@ const WALLET_STORAGE_KEY = "paynest_wallet";
 function CreateWallet() {
   const navigate = useNavigate();
   const { connectWallet } = useWallet();
-
-  // generate a random wallet once and keep it in state
   const [walletData] = useState(() => {
     const wallet = Wallet.createRandom();
     return {
@@ -18,10 +16,6 @@ function CreateWallet() {
       mnemonicWords: wallet.mnemonic ? wallet.mnemonic.phrase.split(" ") : [],
     };
   });
-
-  // convenience variable for the phrase
-  const mnemonic = walletData.mnemonicWords;
-
   const [isRevealed, setIsRevealed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [step, setStep] = useState<"phrase" | "password">("phrase");
@@ -51,8 +45,7 @@ function CreateWallet() {
     setIsSaving(true);
     setError("");
     try {
-      // persist the encrypted wallet
-      await saveWallet(mnemonic.join(" "), password);
+      await saveWallet(walletData.mnemonicWords.join(" "), password);
       const success = await connectWallet(password);
       if (success) {
         navigate("/dashboard");
@@ -169,15 +162,13 @@ function CreateWallet() {
   }
 
   const handleWalletConfirm = () => {
-    // store some metadata that the settings page later reads
     const payload = {
       address: walletData.address,
       mnemonic: walletData.mnemonicWords.join(" "),
       createdAt: Date.now(),
     };
     localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(payload));
-    // move on to the password screen
-    setStep("password");
+    navigate("/settings");
   };
 
   return (
@@ -304,8 +295,11 @@ function CreateWallet() {
           </button>
 
           <button
+            onClick={() => {
+              setStep("password");
+              handleWalletConfirm();
+            }}
             disabled={!isRevealed && !hasCopied}
-            onClick={handleWalletConfirm}
             className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
               ${
                 isRevealed || hasCopied

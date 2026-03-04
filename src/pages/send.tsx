@@ -123,7 +123,7 @@ function SendAssets() {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="0.00"
-                            className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-5 py-5 text-white text-3xl font-black placeholder:text-zinc-600 focus:outline-none focus:border-white/30 transition-all"
+                            className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-5 py-5 text-white text-3xl font-black placeholder:text-zinc-600 focus:outline-none focus:border-white/30 transition-all [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                         <div className="absolute right-5 top-1/2 -translate-y-1/2 flex items-center gap-3">
                             <span className="text-sm font-black text-zinc-500">{activeNetwork.symbol}</span>

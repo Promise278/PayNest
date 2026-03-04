@@ -85,7 +85,7 @@ function Welcome() {
           />
 
           {/* Logo */}
-          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-indigo-500/30 animate-logo-pulse bg-linear-to-br from-indigo-500 to-purple-600 shadow-2xl shadow-indigo-500/20">
+          <div className="w-32 h-32 rounded-full m-2 flex items-center justify-center border-2 border-indigo-500/30 animate-logo-pulse bg-linear-to-br shadow-2xl">
             <p className="text-white text-2xl font-black italic">
               PayNest{" "}
             </p>
@@ -96,7 +96,7 @@ function Welcome() {
           className="text-center animate-fade-in-up"
           style={{ animationDelay: "0.2s" }}
         >
-          <h1 className="text-2xl font-black text-white mb-2">Welcome Back</h1>
+          <h1 className="text-xl font-black text-white mb-2">Welcome Back</h1>
           <p className="text-zinc-500 text-sm">
             Your sleek gateway to the blockchain
           </p>

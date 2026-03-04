@@ -73,7 +73,6 @@ function Settings() {
     navigate("/");
   };
 
-  const displayAddress = address || storedWallet?.address;
 
   return (
     <div className="min-h-full bg-black flex flex-col p-6 text-white relative">
@@ -183,10 +182,7 @@ function Settings() {
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-2xl border border-white/5 bg-zinc-900 p-5 shadow-lg">
-          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Wallet Address</p>
-          <p className="text-sm break-all select-all font-mono text-zinc-300">{displayAddress ?? "No wallet found."}</p>
-        </div>
+        
 
         <button onClick={() => openModal("seed")} disabled={!storedWallet?.mnemonic}
           className={`w-full py-4 px-5 font-bold rounded-2xl transition-all duration-300 text-left flex items-center justify-between shadow-lg ${storedWallet?.mnemonic ? "bg-zinc-900 border border-white/5 text-zinc-300 hover:bg-zinc-800 hover:text-white hover:scale-[1.02] active:scale-[0.98]" : "bg-zinc-950 border border-white/5 text-zinc-600 cursor-not-allowed"}`}>

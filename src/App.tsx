@@ -13,21 +13,19 @@ function App() {
   return (
     <WalletProvider>
       <Router>
-        <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
-          <div className="w-90 h-150 bg-black text-white border-neutral-900 shadow-2xl">
-            <Routes>
-              <Route path="/" element={<Welcome />} />
-              <Route path="/create" element={<CreateWallet />} />
-              <Route path="/setup" element={<div>Setup</div>} />
-              <Route path="/validation" element={<div>Validation</div>} />
-              <Route path="/import" element={<ImportWallet />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/send" element={<SendAssets />} />
-              <Route path="/receive" element={<ReceiveAssets />} />
-              <Route path="/assets" element={<Assets />} />
-              <Route path="/settings" element={<Settings/>} />
-            </Routes>
-          </div>
+        <div className="w-full h-full relative overflow-hidden flex flex-col bg-black text-white">
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/create" element={<CreateWallet />} />
+            <Route path="/setup" element={<div>Setup</div>} />
+            <Route path="/validation" element={<div>Validation</div>} />
+            <Route path="/import" element={<ImportWallet />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/send" element={<SendAssets />} />
+            <Route path="/receive" element={<ReceiveAssets />} />
+            <Route path="/assets" element={<Assets />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
         </div>
       </Router>
     </WalletProvider>

@@ -168,7 +168,6 @@ function CreateWallet() {
       createdAt: Date.now(),
     };
     localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(payload));
-    navigate("/settings");
   };
 
   return (
@@ -299,7 +298,7 @@ function CreateWallet() {
               setStep("password");
               handleWalletConfirm();
             }}
-            disabled={!isRevealed && !hasCopied}
+            disabled={!isRevealed}
             className={`w-full py-3.5 px-6 font-semibold rounded-xl transition-all duration-300
               ${
                 isRevealed || hasCopied

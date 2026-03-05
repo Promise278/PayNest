@@ -28,7 +28,11 @@ PayNest is a modern digital wallet built to make payments simple, secure, and re
 
 - Then next you'll run this command: *npm run build* to build a dist file.
 
-- Go to your browser and navigate to extentions and enable developer mode 
+- Go to your browser and navigate to extentions and enable the developer mode.
+
+- Click on the Load unpacked at the top left, and then select the dist folder the build created.
+
+- Now you can see and interact with the PayNest wallet extention directly on your browser just like your normal extentions 
 
 ### Vision
 

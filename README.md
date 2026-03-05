@@ -22,6 +22,8 @@ PayNest is a modern digital wallet built to make payments simple, secure, and re
 
 - Browser extension support
 
+### How to use as an extention
+
 ### Vision
 
 PayNest isn’t just another wallet.

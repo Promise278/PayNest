@@ -22,17 +22,26 @@ PayNest is a modern digital wallet built to make payments simple, secure, and re
 
 - Browser extension support
 
-### How to use as an extention
 
-- After cloning the repo from github, you will run this command: *npm install* to install all the dependency needed.
+### How to Use as an Extension
 
-- Then next you'll run this command: *npm run build* to build a dist file.
+- After cloning the repository from GitHub, run the following command to install all required dependencies:
+  *`npm install`*
 
-- Go to your browser and navigate to extentions and enable the developer mode.
+- Next, build the project by running:
+  *`npm run build`*
+  This will generate a `dist` folder containing the compiled extension files.
 
-- Click on the Load unpacked at the top left, and then select the dist folder the build created.
+- Open your browser and navigate to the Extensions page:
 
-- Now you can see and interact with the PayNest wallet extention directly on your browser just like your normal extentions 
+  - In Google Chrome: `chrome://extensions/`
+  - In Microsoft Edge: `edge://extensions/`
+    Then enable **Developer Mode**.
+
+- Click **Load unpacked** (usually at the top left), and select the `dist` folder created during the build process.
+
+- The PayNest Wallet extension will now appear in your browser toolbar, and you can interact with it just like any other installed extension.
+
 
 ### Vision
 

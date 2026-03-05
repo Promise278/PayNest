@@ -13,11 +13,14 @@ interface WalletContextType {
     wallet: HDNodeWallet | Wallet | null;
     activeNetwork: Network;
     transactions: Transaction[];
+    lastActiveTime: number | null;
     refreshBalance: () => Promise<void>;
+    loadSessionWallet: () => Promise<boolean>;
     connectWallet: (password: string) => Promise<boolean>;
     saveNewWallet: (mnemonic: string, password: string) => Promise<void>;
     switchNetwork: (networkId: string) => void;
     addTransaction: (tx: Transaction) => void;
+    updateActivity: () => void;
     logout: () => void;
 }
 
@@ -30,11 +33,21 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [wallet, setWallet] = useState<HDNodeWallet | Wallet | null>(null);
     const [activeNetworkId, setActiveNetworkId] = useState<string>(getSavedNetworkId());
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [lastActiveTime, setLastActiveTime] = useState<number | null>(() => {
+        const _time = localStorage.getItem("paynest_last_active");
+        return _time ? parseInt(_time, 10) : null;
+    });
     const providerRef = useRef<JsonRpcProvider>(
         new JsonRpcProvider(NETWORKS[getSavedNetworkId()].rpcUrl)
     );
 
     const activeNetwork = NETWORKS[activeNetworkId] || NETWORKS["sepolia"];
+
+    const updateActivity = useCallback(() => {
+        const now = Date.now();
+        setLastActiveTime(now);
+        localStorage.setItem("paynest_last_active", now.toString());
+    }, []);
 
     useEffect(() => {
         providerRef.current = new JsonRpcProvider(activeNetwork.rpcUrl);
@@ -69,7 +82,9 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             if (loadedWallet) {
                 setWallet(loadedWallet);
                 setAddress(loadedWallet.address);
+                localStorage.setItem("paynest_last_address", loadedWallet.address); // Store address for session resume
                 setTransactions(loadTransactions(loadedWallet.address));
+                updateActivity();
                 return true;
             }
             return false;
@@ -77,6 +92,19 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             console.error("Failed to load wallet:", error);
             return false;
         }
+    };
+
+    const loadSessionWallet = async (): Promise<boolean> => {
+        // Without the password we can't fully decrypt the wallet
+        // But we can restore the address and balance to let them view the dashboard
+        const storedAddress = localStorage.getItem("paynest_last_address");
+        if (storedAddress) {
+            setAddress(storedAddress);
+            setTransactions(loadTransactions(storedAddress));
+            updateActivity();
+            return true;
+        }
+        return false;
     };
 
     const saveNewWallet = async (mnemonic: string, password: string) => {
@@ -105,6 +133,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setAddress(null);
         setBalance("0");
         setTransactions([]);
+        setLastActiveTime(null);
+        localStorage.removeItem("paynest_last_active");
     };
 
     useEffect(() => {
@@ -114,6 +144,28 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             return () => clearInterval(interval);
         }
     }, [address, activeNetworkId, refreshBalance]);
+
+    useEffect(() => {
+        const handleUserActivity = () => {
+            if (address) {
+                updateActivity();
+            }
+        };
+
+        window.addEventListener("mousemove", handleUserActivity);
+        window.addEventListener("keydown", handleUserActivity);
+        window.addEventListener("click", handleUserActivity);
+        window.addEventListener("scroll", handleUserActivity);
+        window.addEventListener("touchstart", handleUserActivity);
+
+        return () => {
+            window.removeEventListener("mousemove", handleUserActivity);
+            window.removeEventListener("keydown", handleUserActivity);
+            window.removeEventListener("click", handleUserActivity);
+            window.removeEventListener("scroll", handleUserActivity);
+            window.removeEventListener("touchstart", handleUserActivity);
+        };
+    }, [address, updateActivity]);
 
     return (
         <WalletContext.Provider
@@ -126,11 +178,14 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 wallet,
                 activeNetwork,
                 transactions,
+                lastActiveTime,
                 refreshBalance,
+                loadSessionWallet,
                 connectWallet,
                 saveNewWallet,
                 switchNetwork,
                 addTransaction,
+                updateActivity,
                 logout,
             }}
         >

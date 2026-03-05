@@ -13,18 +13,35 @@ const particles = Array.from({ length: 20 }, (_, i) => ({
 
 function Welcome() {
   const navigate = useNavigate();
-  const { connectWallet, isConnected } = useWallet();
+  const { connectWallet, isConnected, lastActiveTime, loadSessionWallet } = useWallet();
   const [hasWallet, setHasWallet] = useState(false);
   const [password, setPassword] = useState("");
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setHasWallet(isWalletSaved());
-    if (isConnected) {
-      navigate("/dashboard");
-    }
-  }, [isConnected, navigate]);
+    const checkSession = async () => {
+      const hasW = isWalletSaved();
+      setHasWallet(hasW);
+      if (isConnected) {
+        navigate("/dashboard");
+        return;
+      }
+
+      const sessionValid = lastActiveTime && (Date.now() - lastActiveTime) < 30 * 60 * 1000;
+      if (hasW && sessionValid) {
+        try {
+          const success = await loadSessionWallet();
+          if (success) {
+            navigate("/dashboard");
+          }
+        } catch (e) {
+          console.error("Auto login failed", e);
+        }
+      }
+    };
+    checkSession();
+  }, [isConnected, navigate, lastActiveTime, loadSessionWallet]);
 
   const handleUnlock = async () => {
     setIsUnlocking(true);

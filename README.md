@@ -24,6 +24,12 @@ PayNest is a modern digital wallet built to make payments simple, secure, and re
 
 ### How to use as an extention
 
+- After cloning the repo from github, you will run this command: *npm install* to install all the dependency needed.
+
+- Then next you'll run this command: *npm run build* to build a dist file.
+
+- Go to your browser and navigate to extentions and enable developer mode 
+
 ### Vision
 
 PayNest isn’t just another wallet.
